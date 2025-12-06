@@ -1,506 +1,1013 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
     <title>Buy Me a Coffee</title>
 
+
+
     <!-- Tailwind CSS and other necessary libraries -->
+
     <script src="https://cdn.tailwindcss.com"></script>
+
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
+
+
     <style>
-        /* Custom font for aesthetics */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+        /* Custom font for aesthetics - Using Poppins Font */
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+
 
         body {
-            font-family: 'Inter', sans-serif;
+
+            font-family: 'Poppins', sans-serif;
+
+            -webkit-font-smoothing: antialiased;
+
+            -moz-osx-font-smoothing: grayscale;
+
         }
+
         /* Hide spinners on number inputs */
+
         .no-spinners::-webkit-outer-spin-button,
+
         .no-spinners::-webkit-inner-spin-button {
+
             -webkit-appearance: none;
+
             margin: 0;
+
         }
+
         .no-spinners {
+
             -moz-appearance: textfield;
+
         }
+
         /* Keyframes for the Ripple effect */
+
         @keyframes ripple {
+
             from {
+
                 opacity: 1;
+
                 transform: translate(-50%, -50%) scale(0.1);
+
             }
+
             to {
+
                 opacity: 0;
+
                 transform: translate(-50%, -50%) scale(5);
+
             }
+
         }
+
         .ripple-effect {
+
             animation: ripple 0.6s ease-out;
+
             pointer-events: none;
+
         }
+
     </style>
+
 </head>
 
+
+
 <body>
+
     <div id="root"></div>
 
+
+
     <script type="text/babel">
+
         const { useState, useEffect } = React;
 
+
+
         // --- CONSTANTS AND ICON DEFINITIONS ---
+
         const PRIMARY_COLOR = '#6F4E37'; // Coffee color
+
         const PRICE_PER_COFFEE = 3.50;
 
+
+
         // Progress data (as requested)
+
         const COFFEES_COLLECTED = 11;
+
         const COFFEES_TARGET = 1000000;
 
+
+
         // Helper: format numbers with commas
+
         const fmt = (n) => {
+
             if (typeof n !== 'number') n = Number(n) || 0;
+
             return n.toLocaleString('en-US');
+
         };
 
+
+
         // Base SVG container component
+
         const SvgIcon = ({ children, size = 24, className = '', fill = "currentColor" }) => (
+
             <svg
+
                 xmlns="http://www.w3.org/2000/svg"
+
                 width={size}
+
                 height={size}
+
                 viewBox="0 0 512 512"
+
                 fill={fill}
+
                 className={className}
+
             >
+
                 {children}
+
             </svg>
+
         );
+
+
 
         // Main Support Icon (Heart/Cup)
+
         const SupportHeartIcon = (props) => (
+
             <SvgIcon {...props} fill={props.fill || PRIMARY_COLOR}>
+
                 <g>
+
                     <g>
+
                         <path d="M407.874,376.72c8.138,2.803,16.768,4.277,25.627,4.277c20.967,0,40.681-8.166,55.507-22.992 C503.834,343.18,512,323.467,512,302.499s-8.166-40.681-22.992-55.507c-21.906-21.903-53.639-28.124-81.134-18.675v-27.654H31.293 v195.539l72.839,72.841H0v35.006h139.139h160.889h139.139v-35.006H335.034l72.841-72.841V376.72z M407.874,267.355 c17-12.411,41.041-10.949,56.381,4.389c8.215,8.215,12.739,19.137,12.739,30.754c0,11.617-4.524,22.538-12.739,30.753 c-8.215,8.215-19.137,12.739-30.754,12.739c-9.342,0-18.231-2.93-25.627-8.348V267.355z M291.729,368.383l-74.179,74.179 l-74.18-74.179c-11.56-11.56-17.927-26.93-17.927-43.278c0-16.349,6.366-31.719,17.927-43.279 c20.076-20.074,50.742-23.262,74.18-9.56c23.439-13.7,54.104-10.515,74.179,9.559 C315.593,305.689,315.593,344.519,291.729,368.383z"></path>
+
                     </g>
+
                 </g>
+
                 <g>
+
                     <g>
+
                         <path d="M266.976,306.579c-10.215-10.214-26.837-10.215-37.05,0.001l-12.376,12.375l-12.376-12.375 c-5.107-5.107-11.816-7.661-18.525-7.661c-6.709,0-13.419,2.553-18.525,7.661c-10.215,10.214-10.215,26.834,0,37.05l49.426,49.426 l49.426-49.426C277.191,333.414,277.191,316.793,266.976,306.579z"></path>
+
                     </g>
+
                 </g>
+
                 <g>
+
                     <g>
+
                         <path d="M125.31,7.95l-24.753,24.754c12.331,12.331,12.331,32.399,0,44.731c-25.982,25.982-25.982,68.254,0,94.235l24.753-24.754 c-5.974-5.974-9.264-13.917-9.264-22.365c0-8.447,3.289-16.39,9.264-22.364C151.292,76.205,151.292,33.931,125.31,7.95z"></path>
+
                     </g>
+
                 </g>
+
                 <g>
+
                     <g>
+
                         <path d="M317.453,7.95L292.7,32.703c12.331,12.331,12.331,32.399,0,44.731c-25.982,25.982-25.982,68.254,0,94.235l24.753-24.753 c-5.974-5.974-9.264-13.917-9.264-22.365c0-8.447,3.289-16.39,9.264-22.364C343.434,76.205,343.434,33.931,317.453,7.95z"></path>
+
                     </g>
+
                 </g>
+
                 <g>
+
                     <g>
+
                         <path d="M221.381,7.95l-24.753,24.753c12.331,12.331,12.331,32.399,0,44.731c-25.982,25.982-25.982,68.254,0,94.235l24.753-24.753 c-5.974-5.974-9.264-13.917-9.264-22.365c0-8.447,3.289-16.39,9.264-22.364C247.362,76.205,247.362,33.931,221.381,7.95z"></path>
+
                     </g>
+
                 </g>
+
             </SvgIcon>
+
         );
+
+
 
         // Coffee Bean Icon for preset buttons
+
         const CoffeeBean = (props) => (
+
             <svg {...props} xmlns="http://www.w3.org/2000/svg" width={props.size} height={props.size} viewBox="0 0 32 32" fill={props.fill || PRIMARY_COLOR}>
+
                 <g>
+
                     <path d="M12,17c0.8-4.2,1.9-5.3,6.1-6.1c0.5-0.1,0.8-0.5,0.8-1s-0.3-0.9-0.8-1C13.9,8.1,12.8,7,12,2.8C11.9,2.3,11.5,2,11,2 c-0.5,0-0.9,0.3-1,0.8C9.2,7,8.1,8.1,3.9,8.9C3.5,9,3.1,9.4,3.1,9.9s0.3,0.9,0.8,1c4.2,0.8,5.3,1.9,6.1,6.1c0.1,0.5,0.5,0.8,1,0.8 S11.9,17.4,12,17z"></path>
+
                     <path d="M22,24c-2.8-0.6-3.4-1.2-4-4c-0.1-0.5-0.5-0.8-1-0.8s-0.9,0.3-1,0.8c-0.6,2.8-1.2,3.4-4,4c-0.5,0.1-0.8,0.5-0.8,1 s0.3,0.9,0.8,1c2.8,0.6,3.4,1.2,4,4c0.1,0.5,0.5,0.8,1,0.8s0.9-0.3,1-0.8c0.6-2.8,1.2-3.4,4-4c0.5-0.1,0.8-0.5,0.8-1 S22.4,24.1,22,24z"></path>
+
                     <path d="M29.2,14c-2.2-0.4-2.7-0.9-3.1-3.1c-0.1-0.5-0.5-0.8-1-0.8c-0.5,0-0.9,0.3-1,0.8c-0.4,2.2-0.9,2.7-3.1,3.1 c-0.5,0.1-0.8,0.5-0.8,1s0.3,0.9,0.8,1c2.2,0.4,2.7,0.9,3.1,3.1c0.1,0.5,0.5,0.8,1,0.8c0.5,0,0.9-0.3,1-0.8 c0.4-2.2,0.9-2.7,3.1-3.1c0.5-0.1,0.8-0.5,0.8-1S29.7,14.1,29.2,14z"></path>
+
                     <path d="M5.7,22.3C5.4,22,5,21.9,4.6,22.1c-0.1,0-0.2,0.1-0.3,0.2c-0.1,0.1-0.2,0.2-0.2,0.3C4,22.7,4,22.9,4,23s0,0.3,0.1,0.4 c0.1,0.1,0.1,0.2,0.2,0.3c0.1,0.1,0.2,0.2,0.3,0.2C4.7,24,4.9,24,5,24c0.1,0,0.3,0,0.4-0.1s0.2-0.1,0.3-0.2 c0.1-0.1,0.2-0.2,0.2-0.3C6,23.3,6,23.1,6,23s0-0.3-0.1-0.4C5.9,22.5,5.8,22.4,5.7,22.3z"></path>
-                    <path d="M28,7c0.3,0,0.5-0.1,0.7-0.3C28.9,6.5,29,6.3,29,6s-0.1-0.5-0.3-0.7c-0.1-0.1-0.2-0.2-0.3-0.2c-0.2-0.1-0.5-0.1-0.8,0 c-0.1,0-0.2,0.1-0.3,0.2C27.1,5.5,27,5.7,27,6c0,0.3,0.1,0.5,0.3,0.7C27.5,6.9,27.7,7,28,7z"></path>
+
+                    <path d="M28,7c0.3,0,0.5-0.1,0.7-0.3C28.9,6.5,29,6.3,29,6s-0.1-0.5-0.3-0.7c-0.1-0.1-0.2-0.2-0.2-0.3c-0.2-0.1-0.5-0.1-0.8,0 c-0.1,0-0.2,0.1-0.3,0.2C27.1,5.5,27,5.7,27,6c0,0.3,0.1,0.5,0.3,0.7C27.5,6.9,27.7,7,28,7z"></path>
+
                 </g>
+
             </svg>
+
         );
+
+
 
         // New Coffee Coin Icon (Replaces CreditCard)
+
         const CoffeeCoinIcon = (props) => (
+
             <svg
+
                 {...props}
+
                 xmlns="http://www.w3.org/2000/svg"
+
                 width={props.size}
+
                 height={props.height}
+
                 viewBox="0 0 24 24"
+
                 fill="none"
+
                 className={props.className}
+
             >
+
                 <g>
+
                     <path
+
                         d="M22.0001 8.5C22.0001 11.76 19.6001 14.45 16.4801 14.92V14.86C16.1701 10.98 13.0201 7.83 9.11008 7.52H9.08008C9.55008 4.4 12.2401 2 15.5001 2C19.0901 2 22.0001 4.91 22.0001 8.5Z"
+
                         fill={props.fill || 'currentColor'}
+
                     ></path>
+
                     <path
+
                         d="M14.98 14.98C14.73 11.81 12.19 9.27 9.02 9.02C8.85 9.01 8.67 9 8.5 9C4.91 9 2 11.91 2 15.5C2 19.09 4.91 22 8.5 22C12.09 22 15 19.09 15 15.5C15 15.33 14.99 15.15 14.98 14.98ZM9.38 16.38L8.5 18L7.62 16.38L6 15.5L7.62 14.62L8.5 13L9.38 14.62L11 15.5L9.38 16.38Z"
+
                         fill={props.fill || 'currentColor'}
+
                     ></path>
+
                 </g>
+
             </svg>
+
         );
+
+
 
         // Lucide SVG Icons (Utilities)
+
         const Lock = (props) => (
+
             <svg {...props} xmlns="http://www.w3.org/2000/svg" width={props.size} height={props.size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={props.className}>
+
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+
                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+
             </svg>
+
         );
+
         const Minus = (props) => (
+
             <svg {...props} xmlns="http://www.w3.org/2000/svg" width={props.size} height={props.size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={props.className}>
+
                 <line x1="5" y1="12" x2="19" y2="12"></line>
+
             </svg>
+
         );
+
         const Plus = (props) => (
+
             <svg {...props} xmlns="http://www.w3.org/2000/svg" width={props.size} height={props.size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={props.className}>
+
                 <line x1="12" y1="5" x2="12" y2="19"></line>
+
                 <line x1="5" y1="12" x2="19" y2="12"></line>
+
             </svg>
+
         );
+
+
 
         // Custom Cryptomus Icon
+
         const CryptomusIcon = (props) => (
+
             <svg
+
                 xmlns="http://www.w3.org/2000/svg"
+
                 width={props.size}
+
                 height={props.size}
+
                 viewBox="0 0 82.626 82.627"
+
                 fill={props.fill || PRIMARY_COLOR}
+
                 className={props.className}
+
                 style={{ transform: 'matrix(-1, 0, 0, 1, 0, 0)' }}
+
             >
+
                 <g>
+
                     <path d="M5.206,19.956l0.199,42.771c0.003,0.55,0.306,1.054,0.789,1.314l34.161,17.887c0.223,0.119,0.467,0.179,0.711,0.179 c0.001,0,0.002,0,0.003,0c0.103,0.117,0.218,0.227,0.355,0.309c0.236,0.141,0.502,0.212,0.769,0.212 c0.246,0,0.49-0.061,0.712-0.181l33.729-18.292c0.484-0.263,0.787-0.77,0.787-1.319v-44.5c0-0.013-0.005-0.025-0.005-0.039 c-0.001-0.011,0.003-0.021,0.003-0.033c-0.002-0.043-0.019-0.082-0.022-0.124c-0.013-0.082-0.022-0.164-0.047-0.243 c-0.018-0.055-0.041-0.104-0.064-0.157c-0.031-0.07-0.062-0.139-0.104-0.203c-0.031-0.05-0.068-0.095-0.105-0.141 c-0.047-0.058-0.096-0.112-0.152-0.163c-0.044-0.04-0.091-0.076-0.141-0.111c-0.032-0.02-0.059-0.053-0.094-0.073 c-0.032-0.02-0.069-0.028-0.104-0.045c-0.029-0.015-0.052-0.036-0.081-0.049L41.747,0.118c-0.405-0.171-0.864-0.155-1.258,0.042 L6.131,18.071c-0.504,0.254-0.822,0.77-0.825,1.333c0,0.009,0.004,0.017,0.004,0.025C5.249,19.596,5.205,19.772,5.206,19.956z M72.456,18.501l-30.28,16.93L10.111,19.425L41.218,3.151L72.456,18.501z M43.692,78.61V38.021l30.729-17.173v41.09L43.692,78.61z"></path>
+
                 </g>
+
             </svg>
+
         );
 
+
+
         // --- MainView component with inline About menu (under the paragraph) and progress bar ---
+
         function MainView() {
+
             const [count, setCount] = useState(1);
+
             const [isAnimating, setIsAnimating] = useState(false);
+
             const [ripples, setRipples] = useState([]);
+
             const [showAboutMenu, setShowAboutMenu] = useState(false);
 
+
+
             // Ripple effect for button click
+
             const createRipple = (e) => {
+
                 const rect = e.currentTarget.getBoundingClientRect();
+
                 const x = e.clientX - rect.left;
+
                 const y = e.clientY - rect.top;
 
+
+
                 const newRipple = { x, y, id: Date.now() };
+
                 setRipples((prev) => [...prev, newRipple]);
 
+
+
                 setTimeout(() => {
+
                     setRipples((prev) => prev.filter((r) => r.id !== newRipple.id));
+
                 }, 600);
+
             };
+
+
 
             const updateCount = (newCount) => {
+
                 const safeCount = parseInt(newCount);
+
                 if (safeCount < 1 || isNaN(safeCount)) {
+
                     setCount(1);
+
                     return;
+
                 }
+
                 setCount(safeCount);
+
                 setIsAnimating(true);
+
                 setTimeout(() => setIsAnimating(false), 300);
+
             };
 
+
+
             const handlePreset = (amount) => {
+
                 setCount(amount);
+
                 setIsAnimating(true);
+
                 setTimeout(() => setIsAnimating(false), 300);
+
             };
+
+
 
             const totalPrice = (count * PRICE_PER_COFFEE).toFixed(2);
 
+
+
             const progressFraction = Math.min(1, COFFEES_COLLECTED / COFFEES_TARGET);
+
             const progressPercent = progressFraction * 100;
 
+
+
             return (
+
                 <div className="min-h-screen bg-[#F9F5F0] text-[#4A3B32] flex items-center justify-center p-4 sm:p-8 relative overflow-hidden font-sans selection:bg-[#D4A373] selection:text-white">
 
-                    {/* NOTE: Top-left About button intentionally removed */}
+
 
                     {/* Background Decorative Blocks */}
+
                     <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+
                         <div className="absolute top-[-5%] left-[-5%] w-96 h-96 bg-[#E8DCC4] rounded-full blur-[80px] opacity-60"></div>
+
                         <div className="absolute bottom-[-5%] right-[-5%] w-96 h-96 bg-[#D4A373] rounded-full blur-[100px] opacity-20"></div>
+
                     </div>
+
+
 
                     {/* Card Container (Responsive Max Width) */}
+
                     <div className="relative z-10 w-full max-w-sm sm:max-w-md bg-white border border-[#EBE3D9] rounded-3xl shadow-2xl shadow-[#D4A373]/10 overflow-hidden transform transition-all duration-500">
 
+
+
                         {/* Header Section */}
+
                         <div className="p-6 sm:p-8 text-center border-b border-[#F5EFE6] bg-gradient-to-b from-white to-[#FAFAF9]">
 
+
+
                             {/* Main Icon */}
+
                             <div className="inline-flex items-center justify-center p-5 bg-[#FDFBF7] border border-[#EBE3D9] rounded-full shadow-sm mb-5 relative group cursor-pointer transition-transform hover:scale-105">
+
                                 <SupportHeartIcon
+
                                     size={48}
+
                                     className="relative z-10 transform translate-x-[3px] translate-y-[-3px]"
+
                                     fill={PRIMARY_COLOR}
+
                                 />
+
                             </div>
+
+
 
                             <h1 className="text-2xl sm:text-3xl font-extrabold text-[#4A3B32] tracking-tight">
+
                                 Buy Me a Coffee
+
                             </h1>
+
                             <p className="text-[#8C7B70] mt-2 sm:mt-3 text-sm leading-relaxed">
+
                                 Support my work and help me keep creating. Every sip matters! ❤️
+
                             </p>
 
-                            {/* About menu toggle - appears immediately under the paragraph */}
-                            <div className="mt-3">
+
+
+                            {/* UPDATED: About Menu Button with Modern Pill Style and Hover Effect */}
+
+                            <div className="mt-4">
+
                                 <button
+
                                     onClick={() => setShowAboutMenu((s) => !s)}
-                                    className="text-sm text-[#6F4E37] underline flex items-center justify-center gap-2 mx-auto"
+
+                                    className="text-sm font-medium text-[#6F4E37]/80 hover:text-[#6F4E37] hover:bg-[#6F4E37]/10 px-4 py-2 rounded-full transition-all duration-300 flex items-center justify-center gap-2 mx-auto active:scale-95"
+
                                     aria-expanded={showAboutMenu}
+
                                 >
+
                                     {showAboutMenu ? 'Hide About' : 'About'}
-                                    <svg className={`w-4 h-4 transform transition-transform ${showAboutMenu ? 'rotate-180' : ''}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+
+                                    <svg className={`w-4 h-4 transform transition-transform duration-300 ${showAboutMenu ? 'rotate-180' : ''}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+
                                     </svg>
+
                                 </button>
 
+
+
                                 {/* Inline About panel (collapsible) */}
+
                                 <div
-                                    className={`mx-auto mt-3 max-w-[90%] text-left transition-all duration-300 ${showAboutMenu ? 'opacity-100 max-h-[1000px]' : 'opacity-0 max-h-0 overflow-hidden'}`}
+
+                                    className={`mx-auto mt-3 max-w-[95%] text-left transition-all duration-500 ease-in-out ${showAboutMenu ? 'opacity-100 max-h-[500px] translate-y-0' : 'opacity-0 max-h-0 -translate-y-2 overflow-hidden'}`}
+
                                     aria-hidden={!showAboutMenu}
+
                                 >
-                                    <div className="bg-[#FDFBF7] border border-[#EBE3D9] rounded-lg p-4 text-sm text-[#8C7B70] shadow-sm">
-                                        <h3 className="font-semibold text-[#4A3B32] mb-2">About Kindness Brew</h3>
-                                        <p className="mb-2">
+
+                                    <div className="bg-[#FDFBF7] border border-[#EBE3D9] rounded-2xl p-5 text-sm text-[#8C7B70] shadow-sm mt-2">
+
+                                        <h3 className="font-bold text-[#4A3B32] mb-2 tracking-tight">About Kindness Brew</h3>
+
+                                        <p className="mb-3 leading-relaxed">
+
                                             Kindness Brew is a simple and transparent voluntary crypto donation page, similar to BuyMeACoffee.
+
                                             No products, memberships, digital goods, or services are sold. Users can send optional tips/support
-                                            donations purely out of goodwill. There is no promise of content or reward in exchange for donations.
+
+                                            donations purely out of goodwill.
+
                                         </p>
-                                        <div className="text-xs text-[#7F766E]">
-                                            <strong>Important:</strong> Donations are voluntary and non-refundable. Contact: kindnessbrew.contact@gmail.com
+
+                                        <div className="text-xs text-[#7F766E] bg-[#F5EFE6] p-2 rounded-lg border border-[#EBE3D9]/50">
+
+                                            <strong>Note:</strong> Donations are voluntary and non-refundable. <br/>
+
+                                            <span className="opacity-80">Contact: kindnessbrew.contact@gmail.com</span>
+
                                         </div>
+
                                     </div>
+
                                 </div>
+
                             </div>
+
+
 
                             {/* ---------- Progress indicator ---------- */}
-                            <div className="mt-4 mx-auto w-[90%]">
+
+                            <div className="mt-6 mx-auto w-[90%]">
+
                                 <div className="flex items-center justify-between text-xs text-[#7F766E] mb-2">
+
                                     <div className="flex items-center gap-2">
-                                        {/* UPDATED: Main SupportHeartIcon used here instead of generic icon */}
+
                                         <SupportHeartIcon
+
                                             size={20}
+
                                             fill={PRIMARY_COLOR}
+
                                             className="flex-shrink-0"
+
                                         />
-                                        <div className="text-left"> {/* Added text-left here to align 'Coffee goal' with numbers */}
-                                            <div className="text-sm font-medium text-[#4A3B32]">Coffee goal</div>
-                                            <div className="text-xs text-[#8C7B70]">{fmt(COFFEES_COLLECTED)} / {fmt(COFFEES_TARGET)} coffees</div>
+
+                                        <div className="text-left">
+
+                                            <div className="text-sm font-bold text-[#4A3B32] tracking-tight">Coffee goal</div>
+
+                                            <div className="text-xs text-[#8C7B70] font-medium">{fmt(COFFEES_COLLECTED)} / {fmt(COFFEES_TARGET)} coffees</div>
+
                                         </div>
+
                                     </div>
+
                                     <div className="text-right">
-                                        <div className="text-sm font-semibold text-[#4A3B32]">{progressPercent < 0.01 ? progressPercent.toFixed(4) : progressPercent.toFixed(2)}%</div>
+
+                                        <div className="text-sm font-bold text-[#4A3B32] tracking-tight">{progressPercent < 0.01 ? progressPercent.toFixed(4) : progressPercent.toFixed(2)}%</div>
+
                                     </div>
+
                                 </div>
+
+
 
                                 <div className="w-full bg-[#F3ECE6] rounded-full h-3 overflow-hidden border border-[#ECE0D6]">
+
                                     <div
-                                        className="h-full rounded-full transition-all duration-700"
+
+                                        className="h-full rounded-full transition-all duration-700 ease-out"
+
                                         style={{
+
                                             width: `${progressPercent}%`,
-                                            backgroundImage: `linear-gradient(90deg, ${PRIMARY_COLOR}, #A57A63)`
+
+                                            backgroundImage: `linear-gradient(90deg, ${PRIMARY_COLOR}, #8D6E63)`
+
                                         }}
-                                        aria-valuemin="0"
-                                        aria-valuemax="100"
-                                        aria-valuenow={progressPercent.toFixed(4)}
+
                                         role="progressbar"
+
                                     />
+
                                 </div>
+
                             </div>
+
                             {/* ---------- /Progress indicator ---------- */}
 
+
+
                         </div>
+
+
 
                         {/* Calculation & Action Section */}
+
                         <div className="p-6 sm:p-8 space-y-6 sm:space-y-8 bg-white">
 
+
+
                             {/* Price Display */}
+
                             <div className="text-center space-y-1">
+
                                 <div className="flex items-center justify-center gap-1">
+
                                     <span className={`text-5xl sm:text-6xl font-black text-[#6F4E37] tracking-tighter transition-all duration-300 ${isAnimating ? 'scale-110 opacity-80' : ''}`}>
+
                                         ${totalPrice}
+
                                     </span>
+
                                 </div>
+
                                 <div className="text-[#A89F91] text-xs font-bold uppercase tracking-widest">
+
                                     Total for {count} Support Cup{count > 1 ? 's' : ''}
+
                                 </div>
+
                             </div>
+
+
 
                             {/* Controls */}
+
                             <div className="space-y-5">
 
+
+
                                 {/* Preset Buttons */}
+
                                 <div className="grid grid-cols-3 gap-3">
+
                                     {[1, 10, 100].map((num) => (
+
                                         <button
+
                                             key={num}
+
                                             onClick={() => handlePreset(num)}
-                                            className={`relative py-3 rounded-xl font-bold text-sm transition-all duration-200 border shadow-sm
+
+                                            className={`relative py-3 rounded-xl font-bold text-sm transition-all duration-200 border shadow-sm tracking-tight
+
                                                 ${count === num
+
                                                     ? 'bg-[#6F4E37] border-[#6F4E37] text-white shadow-[#6F4E37]/30 scale-[1.02]'
+
                                                     : 'bg-[#F9F5F0] border-[#EBE3D9] text-[#8C7B70] hover:bg-[#EBE3D9] hover:border-[#D4C3B3]'
+
                                                 }`}
+
                                         >
+
                                             {count === num && (
+
                                                 <CoffeeBean
+
                                                     size={16}
+
                                                     className="absolute top-1.5 right-1.5 text-white animate-pulse"
+
                                                     fill="white"
+
                                                 />
+
                                             )}
+
                                             {num} Cup{num > 1 ? 's' : ''}
+
                                         </button>
+
                                     ))}
+
                                 </div>
+
+
 
                                 {/* Manual Counter */}
+
                                 <div className="flex items-center justify-between bg-[#F9F5F0] p-2 rounded-2xl border border-[#EBE3D9]">
+
                                     <button
+
                                         onClick={() => updateCount(count - 1)}
+
                                         disabled={count <= 1}
+
                                         className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-xl bg-white text-[#6F4E37] shadow-sm border border-[#EBE3D9] hover:bg-[#F3E5AB]/20 transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+
                                     >
+
                                         <Minus size={20} />
+
                                     </button>
+
+
 
                                     <div className="flex-1 text-center">
+
                                         <input
+
                                             type="number"
+
                                             value={count}
+
                                             onChange={(e) => updateCount(e.target.value)}
-                                            className="w-full bg-transparent text-center text-xl sm:text-2xl font-bold text-[#4A3B32] focus:outline-none no-spinners"
+
+                                            className="w-full bg-transparent text-center text-xl sm:text-2xl font-bold text-[#4A3B32] focus:outline-none no-spinners tracking-tight"
+
                                             min="1"
+
                                         />
+
                                     </div>
 
+
+
                                     <button
+
                                         onClick={() => updateCount(count + 1)}
+
                                         className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-xl bg-white text-[#6F4E37] shadow-sm border border-[#EBE3D9] hover:bg-[#F3E5AB]/20 transition active:scale-95"
+
                                     >
+
                                         <Plus size={20} />
+
                                     </button>
+
                                 </div>
+
                             </div>
 
-                            {/* Support Button (Updated Icon Position) */}
+
+
+                            {/* UPDATED: Support Button (Icon Left, Text Right, Modern Font) */}
+
                             <button
+
                                 className="group relative w-full overflow-hidden rounded-2xl bg-[#6F4E37] p-4 font-bold text-white shadow-lg shadow-[#6F4E37]/25 transition-all hover:bg-[#5D4037] hover:shadow-[#6F4E37]/40 active:scale-[0.98]"
+
                                 onClick={createRipple}
+
                             >
+
                                 {ripples.map((ripple) => (
+
                                     <span
+
                                         key={ripple.id}
+
                                         className="absolute bg-white/20 rounded-full ripple-effect"
+
                                         style={{
+
                                             left: ripple.x,
+
                                             top: ripple.y,
+
                                             width: '20px',
+
                                             height: '20px',
+
                                             transform: 'translate(-50%, -50%)',
+
                                             pointerEvents: 'none'
+
                                         }}
+
                                     />
+
                                 ))}
 
-                                <div className="relative flex items-center justify-center space-x-2">
-                                    <span className="text-lg">Support ${totalPrice}</span>
-                                    <CoffeeCoinIcon size={20} fill="white" className="group-hover:translate-x-1 transition-transform opacity-80" />
+
+
+                                <div className="relative flex items-center justify-center gap-3">
+
+                                    <CoffeeCoinIcon
+
+                                        size={22}
+
+                                        fill="white"
+
+                                        className="group-hover:rotate-12 transition-transform duration-300 opacity-90"
+
+                                    />
+
+                                    <span className="text-lg font-bold tracking-tight">Support ${totalPrice}</span>
+
                                 </div>
+
                             </button>
+
+
 
                             {/* Security Information (Cryptomus) */}
+
                             <div className="text-center">
+
                                 <p className="text-xs text-[#A89F91] flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 font-medium leading-relaxed">
+
                                     <Lock size={12} className="text-[#8C7B70] flex-shrink-0" />
+
                                     <span className="flex-shrink-0">Secure payment processed by</span>
+
                                     <span className="flex items-center gap-0.5 flex-shrink-0">
+
                                         <CryptomusIcon size={12} fill={PRIMARY_COLOR} className="inline-block" />
+
                                         Cryptomus
+
                                     </span>
+
                                 </p>
+
                             </div>
 
+
+
                         </div>
+
                     </div>
+
                 </div>
+
             );
+
         }
+
+
 
         // --- AboutView component (kept in case you want a separate page later) ---
+
         function AboutView({ onNavigate }) {
+
             return (
+
                 <div className="min-h-screen bg-[#F9F5F0] text-[#4A3B32] flex items-start justify-center p-6 sm:p-12">
+
                     <div className="relative z-10 w-full max-w-2xl bg-white border border-[#EBE3D9] rounded-3xl shadow-2xl shadow-[#D4A373]/10 p-8">
+
                         <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-2xl font-extrabold">About Kindness Brew</h2>
+
+                            <h2 className="text-2xl font-extrabold tracking-tight">About Kindness Brew</h2>
+
                             <button
+
                                 onClick={() => onNavigate('main')}
+
                                 className="px-3 py-1 rounded-lg bg-[#FDFBF7] border border-[#EBE3D9] text-sm text-[#4A3B32] hover:brightness-95"
+
                             >
+
                                 ← Back
+
                             </button>
+
                         </div>
+
+
 
                         <p className="text-[#8C7B70] leading-relaxed">
+
                             Kindness Brew is a simple and transparent voluntary crypto donation page, similar to BuyMeACoffee.
+
                             No products, memberships, digital goods, or services are sold. Users can send optional tips/support
+
                             donations purely out of goodwill. There is no promise of content or reward in exchange for donations.
+
                             This project is not a business and has no commercial activity. All donations are voluntary and non-refundable.
+
                         </p>
 
+
+
                         <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+
                             <div className="bg-[#FDFBF7] border border-[#EBE3D9] rounded-lg p-4">
-                                <h3 className="font-semibold mb-2">Important Notes</h3>
+
+                                <h3 className="font-semibold mb-2 tracking-tight">Important Notes</h3>
+
                                 <ul className="text-sm text-[#8C7B70] list-disc pl-5">
+
                                     <li>Donations are voluntary and non-refundable.</li>
+
                                     <li>No services or digital products are provided.</li>
+
                                     <li>Donations support the creator's work and upkeep.</li>
+
                                 </ul>
+
                             </div>
+
                             <div className="bg-[#FDFBF7] border border-[#EBE3D9] rounded-lg p-4">
-                                <h3 className="font-semibold mb-2">Contact</h3>
+
+                                <h3 className="font-semibold mb-2 tracking-tight">Contact</h3>
+
                                 <p className="text-sm text-[#8C7B70]">kindnessbrew.contact@gmail.com</p>
+
                             </div>
+
                         </div>
+
+
 
                         <div className="mt-6">
-                            <h3 className="font-semibold mb-2">Privacy & Refund</h3>
+
+                            <h3 className="font-semibold mb-2 tracking-tight">Privacy & Refund</h3>
+
                             <p className="text-sm text-[#8C7B70]">
+
                                 We do not collect personal data except what may be voluntarily provided by users. Donations are not tied to any reward,
+
                                 and therefore refunds are not applicable.
+
                             </p>
+
                         </div>
+
                     </div>
+
                 </div>
+
             );
+
         }
+
+
 
         // --- App (router-like), default shows MainView (AboutView kept for future use) ---
+
         function App() {
+
             const [page, setPage] = useState('main');
+
             return page === 'main' ? <MainView /> : <AboutView onNavigate={(p) => setPage(p)} />;
+
         }
 
+
+
         // Render
+
         ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+
     </script>
+
 </body>
+
 </html>
